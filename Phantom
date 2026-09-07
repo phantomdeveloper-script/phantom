@@ -1,4 +1,4 @@
---[[ PHANTOM protected | v3.7.1 ]]
+-- [[ PHANTOM protected | v3.7.1 ]]
 local _chunks = {
 	"LS1bWwogICAgUEhBTlRPTSAtIEJ1bWJsZWJlZSBZZWxsb3cgLyBCbGFjayBVSQogICAgU21vb3RoIHBh",
 	"Z2VzIHwgUmVhbCBrbm9icyB8IEtleWJpbmRzIHwgVmlzdWFsIGhpdGJveCB8IEZ1bGwgZmVhdHVyZSBz",
