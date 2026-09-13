@@ -1,22 +1,89 @@
-local a=game:GetService("HttpService")
-local b={(function()
-local c={104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,112,104,97,110,116,111,109,100,101,118,101,108,111,112,101,114,45,115,99,114,105,112,116,47,112,104,97,110,116,111,109,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,80,104,97,110,116,111,109}
-local d=""for e=1,#c do d=d..string.char(c[e])end return d
-end)()}
-local function f(g)
-local h=loadstring or load
-if type(h)~="function"then pcall(function()if getrenv then h=getrenv().loadstring or getrenv().load end end)end
-if type(h)~="function"then pcall(function()if getgenv then h=getgenv().loadstring or getgenv().load end end)end
-if type(h)~="function"then error("Phantom: no loadstring",0)end
-local i,j=h(g)if not i then error("Phantom: "..tostring(j),0)end i()
+-[[ PHANTOM 4.1.5 | remote pack ]]
+local function msg(t)
+	pcall(function()
+		local cg = game:GetService("CoreGui")
+		local g = Instance.new("ScreenGui")
+		g.Name = "PhantomBootErr"
+		g.IgnoreGuiInset = true
+		g.DisplayOrder = 1e9
+		g.Parent = cg
+		local f = Instance.new("TextLabel")
+		f.Size = UDim2.fromOffset(420, 48)
+		f.Position = UDim2.new(0.5, -210, 0.12, 0)
+		f.BackgroundColor3 = Color3.new(0, 0, 0)
+		f.BackgroundTransparency = 0.2
+		f.BorderSizePixel = 0
+		f.Font = Enum.Font.Code
+		f.TextSize = 14
+		f.TextColor3 = Color3.new(1, 1, 1)
+		f.Text = tostring(t)
+		f.Parent = g
+		task.delay(8, function()
+			pcall(function() g:Destroy() end)
+		end)
+	end)
+	warn("[Phantom] " .. tostring(t))
 end
-local k
-pcall(function()k=game:HttpGet(b[1])end)
-if type(k)~="string"or #k<32 then
+
+local url = (function()
+	local c = {
+		104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,
+		112,104,97,110,116,111,109,100,101,118,101,108,111,112,101,114,45,115,99,114,105,112,116,47,112,104,97,110,116,111,109,47,
+		114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,80,104,97,110,116,111,109
+	}
+	local d = ""
+	for i = 1, #c do
+		d = d .. string.char(c[i])
+	end
+	return d
+end)()
+
+local function run(src)
+	local loader = loadstring or load
+	if type(loader) ~= "function" then
+		pcall(function()
+			if getrenv then loader = getrenv().loadstring or getrenv().load end
+		end)
+	end
+	if type(loader) ~= "function" then
+		pcall(function()
+			if getgenv then loader = getgenv().loadstring or getgenv().load end
+		end)
+	end
+	if type(loader) ~= "function" then
+		msg("no loadstring on this executor")
+		return
+	end
+	local fn, err = loader(src)
+	if not fn then
+		msg("compile fail: " .. tostring(err))
+		return
+	end
+	local ok, e2 = pcall(fn)
+	if not ok then
+		msg("runtime: " .. tostring(e2))
+	end
+end
+
+local body
 pcall(function()
-local l=syn and syn.request or http_request or request
-if l then local m=l({Url=b[1],Method="GET"})if m and m.Body then k=m.Body end end
+	body = game:HttpGet(url)
 end)
+if type(body) ~= "string" or #body < 64 then
+	pcall(function()
+		local req = (syn and syn.request) or http_request or request
+		if req then
+			local r = req({ Url = url, Method = "GET" })
+			if r and type(r.Body) == "string" then
+				body = r.Body
+			end
+		end
+	end)
 end
-if type(k)~="string"or #k<32 then error("Phantom: fetch failed",0)end
-f(k)
+
+if type(body) ~= "string" or #body < 64 then
+	msg("fetch failed — upload Phantom to GitHub or run Deobfuscated.lua")
+	return
+end
+
+run(body)
